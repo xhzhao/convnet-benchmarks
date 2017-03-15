@@ -4,7 +4,7 @@ local function inception(depth_dim, input_size, config, lib)
    local SpatialMaxPooling = lib[2]
    local ReLU = lib[3]
 
-   local depth_concat = nn.Concat(depth_dim)
+   local depth_concat = nn.ConcatMKLDNN(depth_dim)
    local conv1 = nn.Sequential()
    conv1:add(SpatialConvolution(input_size, config[1][1], 1, 1)):add(ReLU(true))
    depth_concat:add(conv1)
@@ -30,7 +30,7 @@ end
 local function googlenet(lib)
    local SpatialConvolution = lib[1]
    local SpatialMaxPooling = lib[2]
-   local SpatialAveragePooling = torch.type(lib[2]) == 'nn.SpatialMaxPooling' and nn.SpatialAveragePooling or cudnn.SpatialAveragePooling
+   local SpatialAveragePooling = nn.SpatialAveragePoolingMKLDNN
    local ReLU = lib[3]
    local model = nn.Sequential()
    model:add(SpatialConvolution(3,64,7,7,2,2,3,3)):add(ReLU(true))

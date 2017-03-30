@@ -12,7 +12,7 @@ require 'nn'
 local nets = {}
 nets[#nets+1] = require 'alexnet'
 nets[#nets+1] = require 'overfeat'
-nets[#nets+1] = require 'vgg_a'
+nets[#nets+1] = require 'vgg_e'
 nets[#nets+1] = require 'googlenet'
 
 local libs = {}

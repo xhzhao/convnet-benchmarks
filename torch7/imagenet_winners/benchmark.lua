@@ -1,6 +1,7 @@
 require 'sys'
 
 require 'nn'
+require 'mklnn'
 --require 'cunn'
 
 --require 'cudnn'
@@ -11,15 +12,15 @@ require 'nn'
 -- require 'nnbhwd' -- not compiling anymore, file an issue
 local nets = {}
 nets[#nets+1] = require 'alexnet'
-nets[#nets+1] = require 'overfeat'
-nets[#nets+1] = require 'vgg_e'
-nets[#nets+1] = require 'googlenet'
+--nets[#nets+1] = require 'overfeat'
+--nets[#nets+1] = require 'vgg_e'
+--nets[#nets+1] = require 'googlenet'
 
 local libs = {}
 -- libs[#libs+1] = {cudnn.SpatialConvolution, cudnn.SpatialMaxPooling, cudnn.ReLU, 'BDHW', 'cudnn'}
 -- libs[#libs+1] = {fbnn.SpatialConvolution, cudnn.SpatialMaxPooling, cudnn.ReLU, 'BDHW', 'fbnn'}
--- libs[#libs+1] = {nn.SpatialConvolutionMM, nn.SpatialMaxPooling, nn.ReLU, 'BDHW', 'nn'}
-libs[#libs+1] = {nn.SpatialConvolutionMKLDNN, nn.SpatialMaxPoolingMKLDNN, nn.ReLUMKLDNN, 'BDHW', 'nn'}
+libs[#libs+1] = {nn.SpatialConvolution, nn.SpatialMaxPooling, nn.ReLU, 'BDHW', 'nn'}
+--libs[#libs+1] = {nn.SpatialConvolutionMKLDNN, nn.SpatialMaxPoolingMKLDNN, nn.ReLUMKLDNN, 'BDHW', 'nn'}
 -- libs[#libs+1] = {nn.SpatialConvolutionBHWD, nn.SpatialMaxPoolingBHWD, nn.ReLU, 'BHWD', 'nnBHWD'}
 
 --print('Running on device: ' .. cutorch.getDeviceProperties(cutorch.getDevice()).name)
@@ -46,8 +47,8 @@ for i=1,#nets do
    for j=1,#libs do
       collectgarbage()
       local model,model_name,size = nets[i](libs[j])
-      --print(model)
-      --model=model:cuda()
+      model=mklnn.convert(model, 'mkl')
+      print(model)
       local input = makeInput(libs[j],size) --:cuda()
       local lib_name = libs[j][5]
       print('ModelType: ' .. model_name, 'Kernels: ' .. lib_name,

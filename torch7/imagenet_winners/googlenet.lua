@@ -4,7 +4,7 @@ local function inception(depth_dim, input_size, config, lib)
    local SpatialMaxPooling = lib[2]
    local ReLU = lib[3]
 
-   local depth_concat = nn.ConcatMKLDNN(depth_dim)
+   local depth_concat = nn.Concat(depth_dim)
    local conv1 = nn.Sequential()
    conv1:add(SpatialConvolution(input_size, config[1][1], 1, 1)):add(ReLU(true))
    depth_concat:add(conv1)
@@ -30,7 +30,7 @@ end
 local function googlenet(lib)
    local SpatialConvolution = lib[1]
    local SpatialMaxPooling = lib[2]
-   local SpatialAveragePooling = nn.SpatialAveragePoolingMKLDNN
+   local SpatialAveragePooling = nn.SpatialAveragePooling
    local ReLU = lib[3]
    local model = nn.Sequential()
    model:add(SpatialConvolution(3,64,7,7,2,2,3,3)):add(ReLU(true))
@@ -55,7 +55,7 @@ local function googlenet(lib)
    model:add(nn.View(1024):setNumInputDims(3))
    -- model:add(nn.Dropout(0.4))
    model:add(nn.Linear(1024,1000)):add(nn.ReLU(true))
-   -- model:add(nn.LogSoftMax())
+   --model:add(nn.LogSoftMax())
    model:get(1).gradInput = nil
    return model,'GoogleNet', {128,3,224,224}
 end

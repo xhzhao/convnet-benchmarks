@@ -12,9 +12,9 @@ require 'mklnn'
 -- require 'nnbhwd' -- not compiling anymore, file an issue
 local nets = {}
 nets[#nets+1] = require 'alexnet'
---nets[#nets+1] = require 'overfeat'
---nets[#nets+1] = require 'vgg_e'
---nets[#nets+1] = require 'googlenet'
+nets[#nets+1] = require 'overfeat'
+nets[#nets+1] = require 'vgg_a'
+nets[#nets+1] = require 'googlenet'
 
 local libs = {}
 -- libs[#libs+1] = {cudnn.SpatialConvolution, cudnn.SpatialMaxPooling, cudnn.ReLU, 'BDHW', 'cudnn'}
